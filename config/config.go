@@ -1,5 +1,7 @@
 package config
 
+import "os"
+
 func DSN() string {
-	return "./data.db"
+	return os.Getenv("DB_PATH")
 }
