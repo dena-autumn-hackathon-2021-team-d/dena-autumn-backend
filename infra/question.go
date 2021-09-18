@@ -12,7 +12,7 @@ type QuestionRepository struct {
 }
 
 func NewQuestionRepository(dbmap *gorp.DbMap) *QuestionRepository {
-	dbmap.AddTableWithName(entity.Answer{}, "answers").SetKeys(true, "id")
+	dbmap.AddTableWithName(entity.Question{}, "questions").SetKeys(true, "id")
 	return &QuestionRepository{dbmap: dbmap}
 }
 
@@ -33,4 +33,14 @@ func (qr *QuestionRepository) FindRandomly(groupID string) (*entity.Question, er
 	}
 
 	return question, nil
+}
+
+func (qr QuestionRepository) FindByQuestion(groupID string, questionID int) (*entity.Question, error){
+	query := `SELECT * FROM questions WHERE question_id = ? AND group_id = ?`
+
+	var questions *entity.Question
+	if err := qr.dbmap.SelectOne(questions, query, questionID, groupID); err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+	return questions, nil
 }

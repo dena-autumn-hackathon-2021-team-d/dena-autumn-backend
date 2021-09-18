@@ -53,3 +53,28 @@ func (ctrl *QuestionController) GetRandomly(c *gin.Context) {
 
 	c.JSON(http.StatusOK, question)
 }
+
+func (ctrl *QuestionController) FindByQuestion(c *gin.Context) {
+	groupID := c.Param("group_id")
+	if groupID == "" {
+		c.String(http.StatusBadRequest, "invalid path parameter group_id")
+		ctrl.logger.Errorf("invalid path parameter group_id: group_id=%s", groupID)
+		return
+	}
+
+	questionID := c.Param("question_id")
+	if questionID == "" {
+		c.String(http.StatusBadRequest, "invalid path parameter question_id")
+		ctrl.logger.Errorf("invalid path parameter question_id: question_id=%s", questionID)
+		return
+	}
+
+	resAnswers, err := ctrl.uc.FindByQuestion(groupID, questionID)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "failed to get question")
+		ctrl.logger.Errorf("failed to get answers by question: %v", err)
+		return
+	}
+
+	c.JSON(http.StatusOK, resAnswers)
+}

@@ -52,7 +52,7 @@ func main() {
 	//ランダムに質問を取得する
 	api.GET("/group/:group_id/question", questionCtrl.GetRandomly)
 	//該当する質問を取得する
-	api.GET("/group/:group_id/question/:question_id", func(c *gin.Context) {})
+	api.GET("/group/:group_id/question/:question_id", questionCtrl.FindByQuestion)
 	//グループの質問一覧
 	api.GET("/group/:group_id/questions", func(c *gin.Context) {})
 
