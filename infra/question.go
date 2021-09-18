@@ -23,3 +23,14 @@ func (qr *QuestionRepository) Post(question *entity.Question) error {
 
 	return nil
 }
+
+func (qr *QuestionRepository) FindRandomly(groupID string) (*entity.Question, error) {
+	query := `SELECT * FROM questions WHERE group_id = ? ORDER BY RAND() LIMIT 1`
+
+	var question *entity.Question
+	if err := qr.dbmap.SelectOne(&question, query, groupID); err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	return question, nil
+}

@@ -23,3 +23,7 @@ func (q *QuestionUsecase) Post(question *entity.Question) (*entity.Question, err
 	}
 	return question, nil
 }
+
+func (q *QuestionUsecase) GetRandomly(groupID string) (*entity.Question, error) {
+	return q.questionRepo.FindRandomly(groupID)
+}

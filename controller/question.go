@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"net/http"
+
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/entity"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/labstack/gommon/log"
-	"net/http"
 )
 
 type QuestionController struct {
@@ -33,4 +34,22 @@ func (ctrl *QuestionController) Post(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, resQuestion)
+}
+
+func (ctrl *QuestionController) GetRandomly(c *gin.Context) {
+	groupID := c.Param("group_id")
+	if groupID == "" {
+		c.String(http.StatusBadRequest, "invalid path parameter group_id")
+		ctrl.logger.Errorf("invalid path parameter group_id: group_id=%s", groupID)
+		return
+	}
+
+	question, err := ctrl.uc.GetRandomly(groupID)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "failed to get question Randomly")
+		ctrl.logger.Errorf("failed to get question Randomly: %v", err)
+		return
+	}
+
+	c.JSON(http.StatusOK, question)
 }
