@@ -21,13 +21,13 @@ test-with-coverage:
 gen:
 	go generate ./...
 
-.PHONY:docker-up
-docker-up:
-	docker-compose -f docker/docker-compose.dev.yml up --build
+.PHONY:build
+build:
+	docker build . -t dena
 
-.PHONY:docker-down
-docker-down:
-	docker-compose -f docker/docker-compose.dev.yml down
+.PHONY:docker-run
+docker-run:
+	docker run dena
 
 .PHONY:lint
 lint:
