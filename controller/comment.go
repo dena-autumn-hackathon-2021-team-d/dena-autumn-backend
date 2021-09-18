@@ -38,3 +38,42 @@ func (ctrl *CommentController) Post(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resComment)
 }
+
+func (ctrl *CommentController) GetUnique(c *gin.Context) {
+	groupID := c.Param("group_id")
+	if groupID == "" {
+		c.String(http.StatusBadRequest, "invalid path parameter group_id")
+		ctrl.logger.Errorf("invalid path parameter group_id: group_id=%s", groupID)
+		return
+	}
+
+	questionID := c.Param("question_id")
+	if questionID == "" {
+		c.String(http.StatusBadRequest, "invalid path parameter question_id")
+		ctrl.logger.Errorf("invalid path parameter question_id: question_id=%s", questionID)
+		return
+	}
+
+	answerID := c.Param("answer_id")
+	if answerID == "" {
+		c.String(http.StatusBadRequest, "invalid path parameter answer_id")
+		ctrl.logger.Errorf("invalid path parameter answer_id: answer_id=%s", answerID)
+		return
+	}
+
+	commentID := c.Param("comment_id")
+	if commentID == "" {
+		c.String(http.StatusBadRequest, "invalid path parameter comment_id")
+		ctrl.logger.Errorf("invalid path parameter comment_id: comment_id=%s", commentID)
+		return
+	}
+
+	comment, err := ctrl.commentUC.GetUnique(groupID, questionID, answerID, commentID)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "failed to get unique comment")
+		ctrl.logger.Errorf("failed to get unique comment: %v", err)
+		return
+	}
+
+	c.JSON(http.StatusOK, comment)
+}

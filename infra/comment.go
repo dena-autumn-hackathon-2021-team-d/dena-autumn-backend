@@ -23,3 +23,15 @@ func (c *CommentRepository) Post(comment *entity.Comment) error {
 
 	return nil
 }
+
+func (c *CommentRepository) FindUnique(groupID string, questionID, answerID, commentID int) (*entity.Comment, error) {
+	query := `SELECT * FROM comments
+				WHERE group_id = ? AND question_id = ? AND answer_id = ? AND id = ?`
+
+	var comment *entity.Comment
+	if err := c.dbmap.SelectOne(comment, query, groupID, questionID, answerID, comment); err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	return comment, nil
+}
