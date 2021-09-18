@@ -6,4 +6,5 @@ import (
 
 type Question interface {
 	Post(*entity.Question) error
+	FindRandomly(groupID string) (*entity.Question, error)
 }

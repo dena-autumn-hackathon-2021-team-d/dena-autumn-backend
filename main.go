@@ -45,6 +45,8 @@ func main() {
 	api.POST("/group", groupCtrl.Create)
 	//質問の作成
 	api.POST("/question", questionCtrl.Post)
+	//ランダムに質問を取得する
+	api.GET("/group/:group_id/question", questionCtrl.GetRandomly)
 	//該当する質問を取得する
 	api.GET("/group/:group_id/question/:question_id", func(c *gin.Context) {})
 	//グループの質問一覧
