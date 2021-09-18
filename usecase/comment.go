@@ -45,3 +45,17 @@ func (c *CommentUseCase) GetUnique(groupID, questionID, answerID, commentID stri
 
 	return c.commentRepo.FindUnique(groupID, iQuestionID, iAnswerID, iCommentID)
 }
+
+func (c *CommentUseCase) GetByAnswer(groupID, questionID, answerID string) ([]*entity.Comment, error) {
+	iQuestionID, err := strconv.Atoi(questionID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse question id: %w", err)
+	}
+
+	iAnswerID, err := strconv.Atoi(answerID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse answer id: %w", err)
+	}
+
+	return c.commentRepo.FindByAnswer(groupID, iQuestionID, iAnswerID)
+}
