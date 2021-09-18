@@ -37,6 +37,10 @@ func main() {
 	questionUC := usecase.NewQuestionUseCase(questionRepo)
 	questionCtrl := controller.NewQuestionController(logger, questionUC)
 
+	commentRepo := infra.NewCommentRepository(dbMap)
+	commentUC := usecase.NewCommentUseCase(commentRepo)
+	commentCtrl := controller.NewCommentController(logger, commentUC)
+
 	r := gin.Default()
 
 	api := r.Group("/api")
@@ -61,9 +65,8 @@ func main() {
 	//質問に紐付いた解答一覧を取得する
 	api.GET("/group/:group_id/question/:question_id/answers", answerCtrl.GetByQuestion)
 
-	//もしかしたら削る
 	//コメントの投稿
-	api.POST("/comment")
+	api.POST("/comment", commentCtrl.Post)
 	api.GET("/group/:group_id/question/:question_id/answer/:answer_id/comment/:comment_id")
 
 	r.Run(":8000")
