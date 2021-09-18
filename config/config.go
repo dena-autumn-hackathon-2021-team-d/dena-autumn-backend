@@ -1,5 +1,5 @@
 package config
 
 func DSN() string {
-    return "migrations/data.db"
+	return "./data.db"
 }

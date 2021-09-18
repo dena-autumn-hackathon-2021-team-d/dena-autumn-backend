@@ -23,6 +23,7 @@ WORKDIR /home/${USER}
 
 COPY . .
 
+RUN go get -v github.com/rubenv/sql-migrate/...
 RUN make create-db
 
 CMD ["make", "run"]
