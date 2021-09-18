@@ -1,8 +1,29 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"os"
+
+	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/config"
+	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/infra"
+	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/log"
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
+	logger := log.New()
+
+	dbMap, err := infra.NewDB()
+	if err != nil {
+		logger.Errorf("failed NewDB: %s", err.Error())
+		os.Exit(1)
+	}
+	defer func() {
+		err := dbMap.Db.Close()
+		if err != nil {
+			logger.Errorf("failed to close DB: %s", err.Error())
+		}
+	}()
+	
 	r := gin.Default()
 
 	// 質問をランダムで取得する
