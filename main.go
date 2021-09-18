@@ -52,6 +52,8 @@ func main() {
 	api.GET("/group/:group_id/answers", answerCtrl.GetByGroupID)
 	//該当の答えを取得する
 	api.GET("/group/:group_id/question/:question_id/answer/:answer_id", answerCtrl.GetUnique)
+	//質問に紐付いた解答一覧を取得する
+	api.GET("/group/:group_id/question/:question_id/answers", answerCtrl.GetByQuestion)
 
 	//もしかしたら削る
 	//コメントの投稿

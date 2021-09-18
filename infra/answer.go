@@ -45,3 +45,14 @@ func (a *AnswerRepository) FindUnique(groupID string, questionID, answerID int) 
 
 	return answer, nil
 }
+
+func (a *AnswerRepository) FindByQuestion(groupID string, questionID int) ([]*entity.Answer, error) {
+	query := `SELECT * FROM answers WHERE group_id = ? AND question_id = ?`
+
+	var answers []*entity.Answer
+	if _, err := a.dbmap.Select(&answers, query, groupID, questionID); err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	return answers, nil
+}

@@ -86,3 +86,28 @@ func (a *AnswerController) GetUnique(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resAnswer)
 }
+
+func (a *AnswerController) GetByQuestion(c *gin.Context) {
+	groupID := c.Param("group_id")
+	if groupID == "" {
+		c.String(http.StatusBadRequest, "invalid path parameter group_id")
+		a.logger.Errorf("invalid path parameter group_id: group_id=%s", groupID)
+		return
+	}
+
+	questionID := c.Param("question_id")
+	if questionID == "" {
+		c.String(http.StatusBadRequest, "invalid path parameter question_id")
+		a.logger.Errorf("invalid path parameter question_id: question_id=%s", questionID)
+		return
+	}
+
+	resAnswers, err := a.answerUC.GetByQuestion(groupID, questionID)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "failed to get answers by question")
+		a.logger.Errorf("failed to get answers by question: %v", err)
+		return
+	}
+
+	c.JSON(http.StatusOK, resAnswers)
+}
