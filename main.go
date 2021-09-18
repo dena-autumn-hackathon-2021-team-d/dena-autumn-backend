@@ -67,7 +67,8 @@ func main() {
 
 	//コメントの投稿
 	api.POST("/comment", commentCtrl.Post)
-	api.GET("/group/:group_id/question/:question_id/answer/:answer_id/comment/:comment_id")
+	//該当のコメントを取得する
+	api.GET("/group/:group_id/question/:question_id/answer/:answer_id/comment/:comment_id", commentCtrl.GetUnique)
 
 	r.Run(":8000")
 }
