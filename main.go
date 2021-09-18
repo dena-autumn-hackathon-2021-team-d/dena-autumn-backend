@@ -3,8 +3,10 @@ package main
 import (
 	"os"
 
+	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/controller"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/infra"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/log"
+	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/usecase"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,7 +24,11 @@ func main() {
 			logger.Errorf("failed to close DB: %s", err.Error())
 		}
 	}()
-	
+
+	answerRepo := infra.NewAnswerRepository(dbMap)
+	answerUC := usecase.NewAnswerUseCase(answerRepo)
+	answerCtrl := controller.NewAnswerController(logger, answerUC)
+
 	r := gin.Default()
 
 	api := r.Group("/api")
@@ -37,7 +43,7 @@ func main() {
 	api.GET("/group/:group_id/questions", func(c *gin.Context) {})
 
 	//解答のポスト
-	api.POST("/answer", func(c *gin.Context) {})
+	api.POST("/answer", answerCtrl.Post)
 	//該当の答えを取得する
 	api.GET("/group/:group_id/question/:question_id/answer/:answer_id", func(c *gin.Context) {})
 
