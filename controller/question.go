@@ -20,7 +20,7 @@ func NewQuestionController(logger *log.Logger, uc *usecase.QuestionUsecase) *Que
 
 func (ctrl *QuestionController) Post(c *gin.Context) {
 	var question *entity.Question
-	if err := c.ShouldBindJSON(question); err != nil {
+	if err := c.ShouldBindJSON(&question); err != nil {
 		c.String(http.StatusInternalServerError, "failed to bind request body")
 		ctrl.logger.Errorf("failed to bind request body: :%v\n", err)
 		return
@@ -29,7 +29,7 @@ func (ctrl *QuestionController) Post(c *gin.Context) {
 	resQuestion, err := ctrl.uc.Post(question)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "failed to post answer")
-		ctrl.logger.Errorf("failed to post qestion: :%v\n", err)
+		ctrl.logger.Errorf("failed to post question: :%v\n", err)
 		return
 	}
 
