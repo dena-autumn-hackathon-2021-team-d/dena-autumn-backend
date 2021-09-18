@@ -1,7 +1,0 @@
-BEGIN;
-
-DROP TABLE IF EXISTS questions;
-
-DROP TABLE IF EXISTS answers;
-
-COMMIT;

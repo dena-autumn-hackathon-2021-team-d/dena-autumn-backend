@@ -35,4 +35,4 @@ lint:
 
 .PHONY:create-db
 create-db:
-	cd migrations && go run cmd/main.go up
+	sql-migrate up -env="development"
