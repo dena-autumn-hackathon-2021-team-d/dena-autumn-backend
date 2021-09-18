@@ -33,6 +33,10 @@ docker-run:
 lint:
 	golangci-lint run ./...
 
+.PHONY:fmt
+fmt:
+	go fmt ./...
+
 .PHONY:create-db
 create-db:
 	sql-migrate up -env="development"
