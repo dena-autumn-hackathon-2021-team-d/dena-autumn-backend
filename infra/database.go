@@ -14,10 +14,9 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type DbMap *gorp.DbMap
 
 // NewDB はSQLiteサーバに接続して、DbMapを生成します
-func NewDB() (DbMap, error) {
+func NewDB() (*gorp.DbMap, error) {
 	db, err := sql.Open("sqlite3", config.DSN())
 	if err != nil {
 		return nil, fmt.Errorf("failed to open SQLite: %w", err)

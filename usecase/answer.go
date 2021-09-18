@@ -25,3 +25,7 @@ func (a *AnswerUseCase) Post(answer *entity.Answer) (*entity.Answer, error) {
 
 	return answer, nil
 }
+
+func (a *AnswerUseCase) GetByGroupID(groupID string) ([]*entity.Answer, error) {
+	return a.answerRepo.FindByGroupID(groupID)
+}
