@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/config"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/controller"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/infra"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/log"
@@ -72,5 +73,5 @@ func main() {
 	//コメント一覧を取得する
 	api.GET("/group/:group_id/question/:question_id/answer/:answer_id/comments", commentCtrl.GetByAnswer)
 
-	r.Run(":8000")
+	r.Run(config.Port())
 }
