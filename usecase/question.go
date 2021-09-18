@@ -36,3 +36,7 @@ func (q *QuestionUsecase) FindByQuestion(groupID string, questionID string) (*en
 	}
 	return q.questionRepo.FindByQuestion(groupID, iQuestionID)
 }
+
+func (q *QuestionUsecase) GetAll(groupID string) ([]*entity.Question, error) {
+	return q.questionRepo.GetAll(groupID)
+}
