@@ -16,7 +16,7 @@ type AnswerController struct {
 }
 
 func NewAnswerController(logger *log.Logger, answerUC *usecase.AnswerUseCase) *AnswerController {
-	return &AnswerController{answerUC: answerUC}
+	return &AnswerController{logger: logger, answerUC: answerUC}
 }
 
 func (a *AnswerController) Post(c *gin.Context) {

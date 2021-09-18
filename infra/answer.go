@@ -12,7 +12,7 @@ type AnswerRepository struct {
 }
 
 func NewAnswerRepository(dbmap *gorp.DbMap) *AnswerRepository {
-	dbmap.AddTableWithName(entity.Answer{}, "answers").SetKeys(true, "id", "group_id", "question_id")
+	dbmap.AddTableWithName(entity.Answer{}, "answers").SetKeys(true, "id")
 	return &AnswerRepository{dbmap: dbmap}
 }
 
