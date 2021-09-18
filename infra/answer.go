@@ -23,3 +23,14 @@ func (a *AnswerRepository) Post(answer *entity.Answer) error {
 
 	return nil
 }
+
+func (a *AnswerRepository) FindByGroupID(groupID string) ([]*entity.Answer, error) {
+	query := `SELECT * FROM answers WHERE group_id = ?`
+
+	var answers []*entity.Answer
+	if _, err := a.dbmap.Select(&answers, query, groupID); err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	return answers, nil
+}
