@@ -13,3 +13,5 @@ cover.html
 # vendor/
 
 .env
+
+migrations/data.db
