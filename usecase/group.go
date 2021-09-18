@@ -19,6 +19,7 @@ func NewGroupUseCase(group repository.Group) *GroupUseCase {
 
 func (u *GroupUseCase) Create(group *entity.Group) error {
 	group.CreatedAt = time.Now().Format(time.RFC3339)
+    group.NewID()
 
     if err := u.group.Insert(group); err != nil {
         return fmt.Errorf("failed to Insert Group into DB: %w", err)
