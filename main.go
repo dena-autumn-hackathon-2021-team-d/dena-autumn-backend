@@ -38,7 +38,7 @@ func main() {
 	api := r.Group("/api")
 
 	//グループの作成
-	api.POST("/group", groupCtrl.Create(c))
+	api.POST("/group", groupCtrl.Create)
 	//質問の作成
 	api.POST("/question", func(c *gin.Context) {})
 	//該当する質問を取得する
