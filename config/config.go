@@ -1,5 +1,5 @@
 package config
 
-func DNS() string {
+func DSN() string {
     return "migrations/data.db"
 }

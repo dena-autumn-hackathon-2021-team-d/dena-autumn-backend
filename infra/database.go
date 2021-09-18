@@ -16,9 +16,9 @@ import (
 
 type DbMap *gorp.DbMap
 
-// NewDB はSQLiteサーバに接続して、*gorp.DbMapを生成します
+// NewDB はSQLiteサーバに接続して、DbMapを生成します
 func NewDB() (DbMap, error) {
-	db, err := sql.Open("SQLite", config.DSN())
+	db, err := sql.Open("sqlite3", config.DSN())
 	if err != nil {
 		return nil, fmt.Errorf("failed to open SQLite: %w", err)
 	}

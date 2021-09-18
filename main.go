@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 
-	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/config"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/infra"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/log"
 	"github.com/gin-gonic/gin"
