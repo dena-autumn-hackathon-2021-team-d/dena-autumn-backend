@@ -6,5 +6,5 @@ type Answer struct {
 	QuestionID int    `json:"question_id" db:"question_id"`
 	Contents   string `json:"contents" db:"contents"`
 	Username   string `json:"username" db:"username"`
-	CreatedAt  string `json:"created_id" db:"created_at"`
+	CreatedAt  string `json:"created_at" db:"created_at"`
 }
