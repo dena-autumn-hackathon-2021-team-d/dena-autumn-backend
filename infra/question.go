@@ -35,11 +35,21 @@ func (qr *QuestionRepository) FindRandomly(groupID string) (*entity.Question, er
 	return question, nil
 }
 
-func (qr QuestionRepository) FindByQuestion(groupID string, questionID int) (*entity.Question, error){
+func (qr QuestionRepository) FindByQuestion(groupID string, questionID int) (*entity.Question, error) {
 	query := `SELECT * FROM questions WHERE question_id = ? AND group_id = ?`
 
 	var questions *entity.Question
 	if err := qr.dbmap.SelectOne(questions, query, questionID, groupID); err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+	return questions, nil
+}
+
+func (qr QuestionRepository) GetAll(groupID string) ([]*entity.Question, error) {
+	query := `SELECT * FROM questions WHERE group_id = ? ORDER BY created_at DESC `
+
+	var questions []*entity.Question
+	if _, err := qr.dbmap.Select(&questions, query, groupID); err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 	return questions, nil
