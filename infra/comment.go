@@ -35,3 +35,16 @@ func (c *CommentRepository) FindUnique(groupID string, questionID, answerID, com
 
 	return comment, nil
 }
+
+func (c *CommentRepository) FindByAnswer(groupID string, questionID, answerID int) ([]*entity.Comment, error) {
+	query := `SELECT * FROM comments
+				WHERE group_id = ? AND question_id = ? AND answer_id = ?
+				ORDER BY created_at DESC`
+
+	var comments []*entity.Comment
+	if _, err := c.dbmap.Select(&comments, query, groupID, questionID, answerID); err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	return comments, nil
+}
