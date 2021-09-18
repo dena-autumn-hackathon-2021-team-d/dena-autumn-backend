@@ -23,4 +23,6 @@ WORKDIR /home/${USER}
 
 COPY . .
 
+RUN make create-db
+
 CMD ["make", "run"]

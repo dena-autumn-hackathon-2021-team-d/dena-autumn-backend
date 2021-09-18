@@ -2,7 +2,11 @@ module github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend
 
 go 1.17
 
-require github.com/labstack/gommon v0.3.0
+require (
+	github.com/golang-migrate/migrate v3.5.4+incompatible
+	github.com/golang-migrate/migrate/v4 v4.14.1
+	github.com/labstack/gommon v0.3.0
+)
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect

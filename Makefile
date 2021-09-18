@@ -32,3 +32,8 @@ docker-run:
 .PHONY:lint
 lint:
 	golangci-lint run ./...
+
+.PHONY:create-db
+create-db:
+	cd migrations
+	go run cmd/main.go up
