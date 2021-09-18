@@ -51,7 +51,7 @@ func main() {
 	//グループ全体の解答一覧を取得する
 	api.GET("/group/:group_id/answers", answerCtrl.GetByGroupID)
 	//該当の答えを取得する
-	api.GET("/group/:group_id/question/:question_id/answer/:answer_id", func(c *gin.Context) {})
+	api.GET("/group/:group_id/question/:question_id/answer/:answer_id", answerCtrl.GetUnique)
 
 	//もしかしたら削る
 	//コメントの投稿

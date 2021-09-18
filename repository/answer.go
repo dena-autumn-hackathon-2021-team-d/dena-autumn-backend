@@ -5,4 +5,5 @@ import "github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/
 type Answer interface {
 	Post(answer *entity.Answer) error
 	FindByGroupID(groupID string) ([]*entity.Answer, error)
+	FindUnique(groupID string, questionID, answerID int) (*entity.Answer, error)
 }

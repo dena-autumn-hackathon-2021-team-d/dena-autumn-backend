@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/entity"
@@ -28,4 +29,18 @@ func (a *AnswerUseCase) Post(answer *entity.Answer) (*entity.Answer, error) {
 
 func (a *AnswerUseCase) GetByGroupID(groupID string) ([]*entity.Answer, error) {
 	return a.answerRepo.FindByGroupID(groupID)
+}
+
+func (a *AnswerUseCase) GetUnique(groupID, questionID, answerID string) (*entity.Answer, error) {
+	iQuestionID, err := strconv.Atoi(questionID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse question id: %w", err)
+	}
+
+	iAnswerID, err := strconv.Atoi(answerID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse answer id: %w", err)
+	}
+
+	return a.answerRepo.FindUnique(groupID, iQuestionID, iAnswerID)
 }
