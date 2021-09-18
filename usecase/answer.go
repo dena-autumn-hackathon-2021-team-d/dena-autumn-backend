@@ -44,3 +44,12 @@ func (a *AnswerUseCase) GetUnique(groupID, questionID, answerID string) (*entity
 
 	return a.answerRepo.FindUnique(groupID, iQuestionID, iAnswerID)
 }
+
+func (a *AnswerUseCase) GetByQuestion(groupID, questionID string) ([]*entity.Answer, error) {
+	iQuestionID, err := strconv.Atoi(questionID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse question id: %w", err)
+	}
+
+	return a.answerRepo.FindByQuestion(groupID, iQuestionID)
+}

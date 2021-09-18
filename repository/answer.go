@@ -6,4 +6,5 @@ type Answer interface {
 	Post(answer *entity.Answer) error
 	FindByGroupID(groupID string) ([]*entity.Answer, error)
 	FindUnique(groupID string, questionID, answerID int) (*entity.Answer, error)
+	FindByQuestion(groupID string, questionID int) ([]*entity.Answer, error)
 }
