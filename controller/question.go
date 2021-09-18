@@ -1,23 +1,23 @@
 package controller
 
 import (
-	"net/http"
-	"github.com/labstack/gommon/log"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/entity"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/usecase"
 	"github.com/gin-gonic/gin"
+	"github.com/labstack/gommon/log"
+	"net/http"
 )
 
 type QuestionController struct {
-	uc *usecase.QuestionUsecase
+	uc     *usecase.QuestionUsecase
 	logger *log.Logger
 }
 
-func NewQuestionController (logger *log.Logger, uc *usecase.QuestionUsecase) *QuestionController{
-	return &QuestionController{uc : uc , logger: logger}
+func NewQuestionController(logger *log.Logger, uc *usecase.QuestionUsecase) *QuestionController {
+	return &QuestionController{uc: uc, logger: logger}
 }
 
-func(ctrl *QuestionController) Post (c *gin.Context) {
+func (ctrl *QuestionController) Post(c *gin.Context) {
 	var question *entity.Question
 	if err := c.ShouldBindJSON(question); err != nil {
 		c.String(http.StatusInternalServerError, "failed to bind request body")

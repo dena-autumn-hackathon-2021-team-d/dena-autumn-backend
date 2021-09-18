@@ -10,32 +10,32 @@ import (
 )
 
 type GroupController struct {
-	logger   *log.Logger
-	uc *usecase.GroupUseCase
+	logger *log.Logger
+	uc     *usecase.GroupUseCase
 }
 
 func NewGroupController(logger *log.Logger, uc *usecase.GroupUseCase) *GroupController {
 	return &GroupController{
-        logger: logger,
-        uc: uc,
-    }
+		logger: logger,
+		uc:     uc,
+	}
 }
 
 func (ctrl *GroupController) Create(c *gin.Context) {
-    var group *entity.Group 
-    err := c.ShouldBindJSON(&group)
-    if err != nil {
-        c.String(http.StatusBadRequest, err.Error())
+	var group *entity.Group
+	err := c.ShouldBindJSON(&group)
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
 		ctrl.logger.Errorf("failed to bind request body: :%v\n", err)
-        return
-    }
+		return
+	}
 
-    if err := ctrl.uc.Create(group); err != nil {
-        c.String(http.StatusInternalServerError, err.Error())
+	if err := ctrl.uc.Create(group); err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
 		ctrl.logger.Errorf("failed to create group: :%v\n", err)
-        return
-    }
+		return
+	}
 
-    c.JSON(http.StatusCreated, group)
-    return
+	c.JSON(http.StatusCreated, group)
+	return
 }

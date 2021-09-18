@@ -11,19 +11,19 @@ import (
 var _ repository.Group = (*GroupRepository)(nil)
 
 type GroupRepository struct {
-    dbMap *gorp.DbMap
+	dbMap *gorp.DbMap
 }
 
 func NewGroupRepository(dbMap *gorp.DbMap) *GroupRepository {
-    dbMap.AddTableWithName(entity.Group{}, "groups")
-    return &GroupRepository{
-        dbMap: dbMap,
-    }
+	dbMap.AddTableWithName(entity.Group{}, "groups")
+	return &GroupRepository{
+		dbMap: dbMap,
+	}
 }
 
 func (r *GroupRepository) Insert(group *entity.Group) error {
-    if err := r.dbMap.Insert(group); err != nil {
-        fmt.Errorf("failed to execute query: %w", err)
-    }
-    return nil
+	if err := r.dbMap.Insert(group); err != nil {
+		fmt.Errorf("failed to execute query: %w", err)
+	}
+	return nil
 }

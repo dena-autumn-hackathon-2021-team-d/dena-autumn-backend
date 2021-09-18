@@ -1,4 +1,3 @@
-  
 package infra
 
 import (
@@ -6,14 +5,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/go-gorp/gorp"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/config"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/log"
+	"github.com/go-gorp/gorp"
 
 	// sqlite3
 	_ "github.com/mattn/go-sqlite3"
 )
-
 
 // NewDB はSQLiteサーバに接続して、DbMapを生成します
 func NewDB() (*gorp.DbMap, error) {

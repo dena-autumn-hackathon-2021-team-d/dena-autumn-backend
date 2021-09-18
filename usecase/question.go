@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"time"
 	"fmt"
+	"time"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/entity"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/repository"
