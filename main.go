@@ -38,7 +38,7 @@ func main() {
 	//質問の作成
 	api.POST("/question", func(c *gin.Context) {})
 	//該当する質問を取得する
-	api.GET("/group/:group_id/question/:id", func(c *gin.Context) {})
+	api.GET("/group/:group_id/question/:question_id", func(c *gin.Context) {})
 	//グループの質問一覧
 	api.GET("/group/:group_id/questions", func(c *gin.Context) {})
 
