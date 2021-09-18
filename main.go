@@ -33,6 +33,10 @@ func main() {
 	answerUC := usecase.NewAnswerUseCase(answerRepo)
 	answerCtrl := controller.NewAnswerController(logger, answerUC)
 
+	questionRepo := infra.NewQuestionRepository(dbMap)
+	questionUC := usecase.NewQuestionUseCase(questionRepo)
+	questionCtrl := controller.NewQuestionController(logger, questionUC)
+
 	r := gin.Default()
 
 	api := r.Group("/api")
@@ -40,7 +44,7 @@ func main() {
 	//グループの作成
 	api.POST("/group", groupCtrl.Create)
 	//質問の作成
-	api.POST("/question", func(c *gin.Context) {})
+	api.POST("/question", questionCtrl.Post)
 	//該当する質問を取得する
 	api.GET("/group/:group_id/question/:question_id", func(c *gin.Context) {})
 	//グループの質問一覧
