@@ -39,7 +39,7 @@ func (qr QuestionRepository) FindByQuestion(groupID string, questionID int) (*en
 	query := `SELECT * FROM questions WHERE question_id = ? AND group_id = ?`
 
 	var questions *entity.Question
-	if err := qr.dbmap.SelectOne(&questions, query, questionID, groupID); err != nil {
+	if err := qr.dbmap.SelectOne(questions, query, questionID, groupID); err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 	return questions, nil
