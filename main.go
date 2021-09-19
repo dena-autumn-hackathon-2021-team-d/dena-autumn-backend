@@ -47,6 +47,7 @@ func main() {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
 			"http://localhost:3000",
+			"https://young-ocean-49171.herokuapp.com/",
 		},
 		AllowMethods: []string{
 			"POST",

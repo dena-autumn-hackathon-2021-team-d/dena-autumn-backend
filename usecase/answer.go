@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/entity"
@@ -19,6 +18,7 @@ func NewAnswerUseCase(answerRepo repository.Answer) *AnswerUseCase {
 
 func (a *AnswerUseCase) Post(answer *entity.Answer) (*entity.Answer, error) {
 	answer.CreatedAt = time.Now().Format(time.RFC3339)
+	answer.NewID()
 
 	if err := a.answerRepo.Post(answer); err != nil {
 		return nil, fmt.Errorf("failed to post answer: %w", err)
@@ -32,24 +32,9 @@ func (a *AnswerUseCase) GetByGroupID(groupID string) ([]*entity.Answer, error) {
 }
 
 func (a *AnswerUseCase) GetUnique(groupID, questionID, answerID string) (*entity.Answer, error) {
-	iQuestionID, err := strconv.Atoi(questionID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse question id: %w", err)
-	}
-
-	iAnswerID, err := strconv.Atoi(answerID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse answer id: %w", err)
-	}
-
-	return a.answerRepo.FindUnique(groupID, iQuestionID, iAnswerID)
+	return a.answerRepo.FindUnique(groupID, questionID, answerID)
 }
 
 func (a *AnswerUseCase) GetByQuestion(groupID, questionID string) ([]*entity.Answer, error) {
-	iQuestionID, err := strconv.Atoi(questionID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse question id: %w", err)
-	}
-
-	return a.answerRepo.FindByQuestion(groupID, iQuestionID)
+	return a.answerRepo.FindByQuestion(groupID, questionID)
 }
