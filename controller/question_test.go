@@ -32,26 +32,23 @@ func TestQuestion(t *testing.T) {
 			logger.Errorf("failed to close DB: %s", err.Error())
 		}
 	}()
-    groupRepo := infra.NewGroupRepository(dbMap)
+
+	groupRepo := infra.NewGroupRepository(dbMap)
 	groupUC := usecase.NewGroupUseCase(groupRepo)
 	groupCtrl := controller.NewGroupController(logger, groupUC)
-
-	// answerRepo := infra.NewAnswerRepository(dbMap)
-	// answerUC := usecase.NewAnswerUseCase(answerRepo)
-	// answerCtrl := controller.NewAnswerController(logger, answerUC)
 
 	questionRepo := infra.NewQuestionRepository(dbMap)
 	questionUC := usecase.NewQuestionUseCase(questionRepo)
 	questionCtrl := controller.NewQuestionController(logger, questionUC)
 
-    // Groupの作成
-    reqBody := `{"name":"groupname"}`
+	// Groupの作成
+	reqBody := `{"name":"groupname"}`
 	w := httptest.NewRecorder()
 	context, _ := gin.CreateTestContext(w)
-    context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(reqBody))
-    groupCtrl.Create(context)
+	context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(reqBody))
+	groupCtrl.Create(context)
 
-    var group entity.Group
+	var group entity.Group
 	if err = json.Unmarshal(w.Body.Bytes(), &group); err != nil {
 		t.Fatal(err, string(w.Body.Bytes()))
 	}
@@ -60,29 +57,42 @@ func TestQuestion(t *testing.T) {
 	reqBody = `{
     "contents":"Question?",
     "username":"user",
-    "group_id":"`+group.ID+`"
+    "group_id":"` + group.ID + `"
 }`
-
-	fmt.Println(reqBody)
-	
 	w = httptest.NewRecorder()
 	context, _ = gin.CreateTestContext(w)
-    context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(reqBody))
-    questionCtrl.Post(context)
+	context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(reqBody))
+	questionCtrl.Post(context)
+	var question entity.Question
+	if err = json.Unmarshal(w.Body.Bytes(), &question); err != nil {
+		t.Fatal(err, string(w.Body.Bytes()))
+	}
+	want := entity.Question{
+		Contents: "Question?",
+		Username: "user",
+		GroupID:  group.ID,
+	}
+	opts := cmpopts.IgnoreFields(question, "CreatedAt", "ID")
+	if diff := cmp.Diff(want, question, opts); diff != "" {
+		t.Errorf("Post (-want +got) =\n%s\n", diff)
+	}
 
-    var got entity.Question
+	// FindByQuestionが正しく取得できる
+	w = httptest.NewRecorder()
+	context, _ = gin.CreateTestContext(w)
+	context.Request = httptest.NewRequest("GET", "/", nil)
+	context.Params = append(context.Params,
+		gin.Param{Key: "group_id", Value: group.ID},
+		gin.Param{Key: "question_id", Value: question.ID},
+	)
+	fmt.Println(group.ID, question.ID)
+	questionCtrl.FindByQuestion(context)
+	var got entity.Question
 	if err = json.Unmarshal(w.Body.Bytes(), &got); err != nil {
 		t.Fatal(err, string(w.Body.Bytes()))
 	}
-
-    want := entity.Question{
-        Contents:"Question?",
-		Username: "user",
-		GroupID: group.ID,
-    }
-    
-    opts := cmpopts.IgnoreFields(got, "CreatedAt", "ID")
-	if diff := cmp.Diff(want, got, opts); diff != "" {
-		t.Errorf("Create (-want +got) =\n%s\n", diff)
+	want = question
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("FindByQuestion (-want +got) =\n%s\n", diff)
 	}
 }

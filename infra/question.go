@@ -16,6 +16,16 @@ type QuestionRepository struct {
 	dbmap *gorp.DbMap
 }
 
+// QuestionDTO はNumAnswersをInsertでは無視して，Findでは利用できるようにするための構造体
+type QuestionDTO struct {
+	ID         string `json:"id" db:"id"`
+	Contents   string `json:"contents" db:"contents"`
+	GroupID    string `json:"group_id" db:"group_id"`
+	Username   string `json:"username" db:"username"`
+	CreatedAt  string `json:"created_at" db:"created_at"`
+	NumAnswers int    `json:"num_answers" db:"num_answers"`
+}
+
 func NewQuestionRepository(dbmap *gorp.DbMap) *QuestionRepository {
 	dbmap.AddTableWithName(entity.Question{}, "questions")
 	return &QuestionRepository{dbmap: dbmap}
@@ -34,7 +44,7 @@ func (qr *QuestionRepository) FindRandomly(groupID string) (*entity.Question, er
 				FROM questions AS q
 				WHERE group_id = ? ORDER BY RANDOM() LIMIT 1`
 
-	question := &entity.Question{}
+	question := &QuestionDTO{}
 	if err := qr.dbmap.SelectOne(question, query, groupID); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, entity.ErrQuestionNotFound
@@ -42,7 +52,14 @@ func (qr *QuestionRepository) FindRandomly(groupID string) (*entity.Question, er
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 
-	return question, nil
+	return &entity.Question{
+		ID:         question.ID,
+		Contents:   question.Contents,
+		GroupID:    question.GroupID,
+		Username:   question.Username,
+		CreatedAt:  question.CreatedAt,
+		NumAnswers: question.NumAnswers,
+	}, nil
 }
 
 func (qr QuestionRepository) FindByQuestion(groupID, questionID string) (*entity.Question, error) {
@@ -50,11 +67,19 @@ func (qr QuestionRepository) FindByQuestion(groupID, questionID string) (*entity
 				FROM questions AS q
 				WHERE id = ? AND group_id = ?`
 
-	question := &entity.Question{}
+	question := &QuestionDTO{}
 	if err := qr.dbmap.SelectOne(question, query, questionID, groupID); err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
-	return question, nil
+
+	return &entity.Question{
+		ID:         question.ID,
+		Contents:   question.Contents,
+		GroupID:    question.GroupID,
+		Username:   question.Username,
+		CreatedAt:  question.CreatedAt,
+		NumAnswers: question.NumAnswers,
+	}, nil
 }
 
 func (qr QuestionRepository) GetAll(groupID string) ([]*entity.Question, error) {
