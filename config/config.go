@@ -7,5 +7,5 @@ func DSN() string {
 }
 
 func Port() string {
-	return ":8000"
+	return ":" + os.Getenv("PORT")
 }
