@@ -17,6 +17,7 @@ RUN apt-get install -y git sudo curl gcc sqlite3 make
 RUN curl -O https://dl.google.com/go/go1.17.1.linux-amd64.tar.gz
 RUN rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.1.linux-amd64.tar.gz
 ENV PATH $PATH:/usr/local/go/bin
+ENV PATH $PATH:${HOME}/go/bin
 RUN go version
 
 WORKDIR /home/${USER}
