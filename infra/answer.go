@@ -27,7 +27,7 @@ func (a *AnswerRepository) Post(answer *entity.Answer) error {
 func (a *AnswerRepository) FindByGroupID(groupID string) ([]*entity.Answer, error) {
 	query := `SELECT * FROM answers WHERE group_id = ?`
 
-	var answers []*entity.Answer
+	answers := []*entity.Answer{}
 	if _, err := a.dbmap.Select(&answers, query, groupID); err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
@@ -38,8 +38,8 @@ func (a *AnswerRepository) FindByGroupID(groupID string) ([]*entity.Answer, erro
 func (a *AnswerRepository) FindUnique(groupID string, questionID, answerID int) (*entity.Answer, error) {
 	query := `SELECT * FROM answers WHERE group_id = ? AND question_id = ? AND id = ?`
 
-	var answer *entity.Answer
-	if err := a.dbmap.SelectOne(&answer, query, groupID, questionID, answerID); err != nil {
+	answer := &entity.Answer{}
+	if err := a.dbmap.SelectOne(answer, query, groupID, questionID, answerID); err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 
@@ -49,7 +49,7 @@ func (a *AnswerRepository) FindUnique(groupID string, questionID, answerID int) 
 func (a *AnswerRepository) FindByQuestion(groupID string, questionID int) ([]*entity.Answer, error) {
 	query := `SELECT * FROM answers WHERE group_id = ? AND question_id = ?`
 
-	var answers []*entity.Answer
+	answers := []*entity.Answer{}
 	if _, err := a.dbmap.Select(&answers, query, groupID, questionID); err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
