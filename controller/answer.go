@@ -20,7 +20,7 @@ func NewAnswerController(logger *log.Logger, answerUC *usecase.AnswerUseCase) *A
 }
 
 func (a *AnswerController) Post(c *gin.Context) {
-	var answer *entity.Answer
+	answer := &entity.Answer{}
 	if err := c.ShouldBindJSON(answer); err != nil {
 		c.String(http.StatusInternalServerError, "failed to bind request body")
 		a.logger.Errorf("failed to bind request body: :%v", err)
