@@ -90,7 +90,6 @@ func TestComment_Post(t *testing.T) {
 	context, _ = gin.CreateTestContext(w)
 	context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(req))
 	questionCtrl.Post(context)
-
 	var question entity.Question
 	if err = json.Unmarshal(w.Body.Bytes(), &question); err != nil {
 		t.Fatal(err, string(w.Body.Bytes()))
