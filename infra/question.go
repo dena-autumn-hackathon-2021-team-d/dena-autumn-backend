@@ -83,11 +83,26 @@ func (qr QuestionRepository) FindByQuestion(groupID, questionID string) (*entity
 }
 
 func (qr QuestionRepository) GetAll(groupID string) ([]*entity.Question, error) {
-	query := `SELECT * FROM questions WHERE group_id = ? ORDER BY created_at DESC `
+	query := `SELECT id, contents, group_id, username, created_at, (SELECT COUNT(id) FROM answers AS a WHERE a.question_id = q.id) as num_answers
+				FROM questions AS q
+				WHERE group_id = ?
+				ORDER BY created_at DESC`
 
-	questions := []*entity.Question{}
+	questions := []*QuestionDTO{}
 	if _, err := qr.dbmap.Select(&questions, query, groupID); err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
-	return questions, nil
+
+	resQuestions := make([]*entity.Question, len(questions))
+	for i, question := range questions {
+		resQuestions[i] = &entity.Question{
+			ID:         question.ID,
+			Contents:   question.Contents,
+			GroupID:    question.GroupID,
+			Username:   question.Username,
+			CreatedAt:  question.CreatedAt,
+			NumAnswers: question.NumAnswers,
+		}
+	}
+	return resQuestions, nil
 }
