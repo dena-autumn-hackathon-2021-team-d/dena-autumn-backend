@@ -6,15 +6,18 @@ import (
 	"fmt"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/entity"
+	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/repository"
 	"github.com/go-gorp/gorp"
 )
+
+var _ repository.Question = (*QuestionRepository)(nil)
 
 type QuestionRepository struct {
 	dbmap *gorp.DbMap
 }
 
 func NewQuestionRepository(dbmap *gorp.DbMap) *QuestionRepository {
-	dbmap.AddTableWithName(entity.Question{}, "questions").SetKeys(true, "id")
+	dbmap.AddTableWithName(entity.Question{}, "questions")
 	return &QuestionRepository{dbmap: dbmap}
 }
 
@@ -42,10 +45,10 @@ func (qr *QuestionRepository) FindRandomly(groupID string) (*entity.Question, er
 	return question, nil
 }
 
-func (qr QuestionRepository) FindByQuestion(groupID string, questionID int) (*entity.Question, error) {
+func (qr QuestionRepository) FindByQuestion(groupID, questionID string) (*entity.Question, error) {
 	query := `SELECT id, contents, group_id, username, created_at, (SELECT COUNT(id) FROM answers AS a WHERE a.question_id = q.id) as num_answers
 				FROM questions AS q
-				WHERE question_id = ? AND group_id = ?`
+				WHERE id = ? AND group_id = ?`
 
 	question := &entity.Question{}
 	if err := qr.dbmap.SelectOne(question, query, questionID, groupID); err != nil {
