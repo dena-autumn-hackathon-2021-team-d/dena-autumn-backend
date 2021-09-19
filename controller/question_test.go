@@ -3,7 +3,6 @@ package controller_test
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http/httptest"
 	"os"
 	"testing"
@@ -41,6 +40,10 @@ func TestQuestion(t *testing.T) {
 	questionUC := usecase.NewQuestionUseCase(questionRepo)
 	questionCtrl := controller.NewQuestionController(logger, questionUC)
 
+	answerRepo := infra.NewAnswerRepository(dbMap)
+	answerUC := usecase.NewAnswerUseCase(answerRepo)
+	answerCtrl := controller.NewAnswerController(logger, answerUC)
+
 	// Groupの作成
 	reqBody := `{"name":"groupname"}`
 	w := httptest.NewRecorder()
@@ -55,10 +58,11 @@ func TestQuestion(t *testing.T) {
 
 	// Questionの作成
 	reqBody = `{
-    "contents":"Question?",
-    "username":"user",
-    "group_id":"` + group.ID + `"
-}`
+		"contents":"Question1",
+		"username":"user",
+		"group_id":"` + group.ID + `"
+	}`
+
 	w = httptest.NewRecorder()
 	context, _ = gin.CreateTestContext(w)
 	context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(reqBody))
@@ -68,13 +72,36 @@ func TestQuestion(t *testing.T) {
 		t.Fatal(err, string(w.Body.Bytes()))
 	}
 	want := entity.Question{
-		Contents: "Question?",
-		Username: "user",
-		GroupID:  group.ID,
+		Contents:   "Question1",
+		Username:   "user",
+		GroupID:    group.ID,
+		NumAnswers: 0,
 	}
 	opts := cmpopts.IgnoreFields(question, "CreatedAt", "ID")
 	if diff := cmp.Diff(want, question, opts); diff != "" {
 		t.Errorf("Post (-want +got) =\n%s\n", diff)
+	}
+
+	// num_answersの確認のためにanswersを作る
+	reqBodys := []string{
+		`{
+			"contents":"ANSWERS1",
+			"username":"user",
+			"group_id":"` + group.ID + `",
+			"question_id":"` + question.ID + `"
+		}`,
+		`{
+			"contents":"ANSWERS2",
+			"username":"user",
+			"group_id":"` + group.ID + `",
+			"question_id":"` + question.ID + `"
+		}`,
+	}
+	for _, r := range reqBodys {
+		w = httptest.NewRecorder()
+		context, _ = gin.CreateTestContext(w)
+		context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(r))
+		answerCtrl.Post(context)
 	}
 
 	// FindByQuestionが正しく取得できる
@@ -85,14 +112,51 @@ func TestQuestion(t *testing.T) {
 		gin.Param{Key: "group_id", Value: group.ID},
 		gin.Param{Key: "question_id", Value: question.ID},
 	)
-	fmt.Println(group.ID, question.ID)
 	questionCtrl.FindByQuestion(context)
 	var got entity.Question
 	if err = json.Unmarshal(w.Body.Bytes(), &got); err != nil {
 		t.Fatal(err, string(w.Body.Bytes()))
 	}
-	want = question
-	if diff := cmp.Diff(want, got); diff != "" {
+	question.NumAnswers = 2
+	if diff := cmp.Diff(question, got); diff != "" {
 		t.Errorf("FindByQuestion (-want +got) =\n%s\n", diff)
 	}
+
+	// Questionの２つ目を追加する
+	reqBody = `{
+		"contents":"Question2",
+		"username":"user",
+		"group_id":"` + group.ID + `"
+	}`
+
+	w = httptest.NewRecorder()
+	context, _ = gin.CreateTestContext(w)
+	context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(reqBody))
+	questionCtrl.Post(context)
+	var question2 entity.Question
+	if err = json.Unmarshal(w.Body.Bytes(), &question2); err != nil {
+		t.Fatal(err, string(w.Body.Bytes()))
+	}
+
+	// GetAllが正しく取得できる
+	w = httptest.NewRecorder()
+	context, _ = gin.CreateTestContext(w)
+	context.Request = httptest.NewRequest("GET", "/", nil)
+	context.Params = append(context.Params,
+		gin.Param{Key: "group_id", Value: group.ID},
+	)
+	questionCtrl.GetAll(context)
+	var gotQuestions []entity.Question
+	if err = json.Unmarshal(w.Body.Bytes(), &gotQuestions); err != nil {
+		t.Fatal(err, string(w.Body.Bytes()))
+	}
+
+	wantQuestions := []entity.Question{
+		question,
+		question2,
+	}
+	if diff := cmp.Diff(wantQuestions, gotQuestions); diff != "" {
+		t.Errorf("GetAll (-want +got) =\n%s\n", diff)
+	}
+
 }
