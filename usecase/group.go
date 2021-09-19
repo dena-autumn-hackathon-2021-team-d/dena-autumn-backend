@@ -27,3 +27,7 @@ func (u *GroupUseCase) Create(group *entity.Group) error {
 	}
 	return nil
 }
+
+func (u *GroupUseCase) GetByID(groupID string) (*entity.Group, error) {
+	return u.group.FindByID(groupID)
+}

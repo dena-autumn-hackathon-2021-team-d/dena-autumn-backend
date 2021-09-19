@@ -27,3 +27,14 @@ func (r *GroupRepository) Insert(group *entity.Group) error {
 	}
 	return nil
 }
+
+func (r *GroupRepository) FindByID(groupID string) (*entity.Group, error) {
+	query := `SELECT * FROM groups WHERE id = ?`
+
+	var group *entity.Group
+	if err := r.dbMap.SelectOne(group, query); err != nil {
+		return nil, fmt.Errorf("failed to execute query: %w", err)
+	}
+
+	return group, nil
+}

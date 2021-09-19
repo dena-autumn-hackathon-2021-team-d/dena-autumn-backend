@@ -4,12 +4,12 @@ import (
 	"os"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/config"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/controller"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/infra"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/log"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/usecase"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -62,6 +62,9 @@ func main() {
 
 	//グループの作成
 	api.POST("/group", groupCtrl.Create)
+	//該当するグループの情報を取得する
+	api.GET("/group/:group_id", groupCtrl.GetByID)
+
 	//質問の作成
 	api.POST("/question", questionCtrl.Post)
 	//ランダムに質問を取得する
