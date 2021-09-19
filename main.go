@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"os"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/config"
@@ -58,6 +59,8 @@ func main() {
 		},
 		AllowCredentials: true,
 	}))
+
+	r.GET("/", func(c *gin.Context) { c.String(http.StatusOK, "healthcheck success") })
 
 	api := r.Group("/api")
 
