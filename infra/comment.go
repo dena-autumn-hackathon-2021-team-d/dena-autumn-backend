@@ -32,7 +32,7 @@ func (c *CommentRepository) FindUnique(groupID, questionID, answerID, commentID 
 				WHERE group_id = ? AND question_id = ? AND answer_id = ? AND id = ?`
 
 	comment := &entity.Comment{}
-	if err := c.dbmap.SelectOne(comment, query, groupID, questionID, answerID, comment); err != nil {
+	if err := c.dbmap.SelectOne(comment, query, groupID, questionID, answerID, commentID); err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 
