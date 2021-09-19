@@ -1,6 +1,8 @@
 package infra
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/entity"
@@ -29,8 +31,11 @@ func (qr *QuestionRepository) FindRandomly(groupID string) (*entity.Question, er
 				FROM questions AS q
 				WHERE group_id = ? ORDER BY RANDOM() LIMIT 1`
 
-	var question *entity.Question
-	if err := qr.dbmap.SelectOne(&question, query, groupID); err != nil {
+	question := &entity.Question{}
+	if err := qr.dbmap.SelectOne(question, query, groupID); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, entity.ErrQuestionNotFound
+		}
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 
