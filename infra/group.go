@@ -32,7 +32,7 @@ func (r *GroupRepository) FindByID(groupID string) (*entity.Group, error) {
 	query := `SELECT * FROM groups WHERE id = ?`
 
 	var group *entity.Group
-	if err := r.dbMap.SelectOne(group, query); err != nil {
+	if err := r.dbMap.SelectOne(group, query, groupID); err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 
