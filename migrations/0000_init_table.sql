@@ -1,13 +1,13 @@
 -- +migrate Up
 CREATE TABLE IF NOT EXISTS groups (
-  id VARCHAR(50) NOT NULL PRIMARY KEY,
+  id VARCHAR(50) PRIMARY KEY,
   name VARCHAR(32),
   created_at VARCHAR(20)
 );
 
 CREATE TABLE IF NOT EXISTS questions (
   id INT AUTO_INCREMENT,
-  group_id VARCHAR(50) NOT NULL,
+  group_id VARCHAR(50),
   contents VARCHAR(256),
   username VARCHAR(32),
   created_at VARCHAR(20),
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS questions (
 
 CREATE TABLE IF NOT EXISTS answers (
   id INT AUTO_INCREMENT,
-  group_id VARCHAR(50) NOT NULL,
+  group_id VARCHAR(50),
   question_id INT,
   contents VARCHAR(256),
   username VARCHAR(32),
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS answers (
 
 CREATE TABLE IF NOT EXISTS comments (
   id INT AUTO_INCREMENT,
-  group_id VARCHAR(50) NOT NULL,
+  group_id VARCHAR(50),
   question_id INT,
   answer_id INT,
   contents VARCHAR(256),
