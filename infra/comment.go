@@ -4,15 +4,18 @@ import (
 	"fmt"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/entity"
+	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/repository"
 	"github.com/go-gorp/gorp"
 )
+
+var _ repository.Comment = (*CommentRepository)(nil)
 
 type CommentRepository struct {
 	dbmap *gorp.DbMap
 }
 
 func NewCommentRepository(dbmap *gorp.DbMap) *CommentRepository {
-	dbmap.AddTableWithName(entity.Comment{}, "comments").SetKeys(true, "id")
+	dbmap.AddTableWithName(entity.Comment{}, "comments")
 	return &CommentRepository{dbmap: dbmap}
 }
 
@@ -24,7 +27,7 @@ func (c *CommentRepository) Post(comment *entity.Comment) error {
 	return nil
 }
 
-func (c *CommentRepository) FindUnique(groupID string, questionID, answerID, commentID int) (*entity.Comment, error) {
+func (c *CommentRepository) FindUnique(groupID, questionID, answerID, commentID string) (*entity.Comment, error) {
 	query := `SELECT * FROM comments
 				WHERE group_id = ? AND question_id = ? AND answer_id = ? AND id = ?`
 
@@ -36,7 +39,7 @@ func (c *CommentRepository) FindUnique(groupID string, questionID, answerID, com
 	return comment, nil
 }
 
-func (c *CommentRepository) FindByAnswer(groupID string, questionID, answerID int) ([]*entity.Comment, error) {
+func (c *CommentRepository) FindByAnswer(groupID, questionID, answerID string) ([]*entity.Comment, error) {
 	query := `SELECT * FROM comments
 				WHERE group_id = ? AND question_id = ? AND answer_id = ?
 				ORDER BY created_at DESC`

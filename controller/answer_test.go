@@ -18,8 +18,8 @@ import (
 type fakeAnswerRepository struct {
 	postFunc          func(answer *entity.Answer) error
 	findByGroupIDFunc func(groupID string) ([]*entity.Answer, error)
-	findUniqueFunc    func(groupID string, questionID, answerID int) (*entity.Answer, error)
-	findByQuestion    func(groupID string, questionID int) ([]*entity.Answer, error)
+	findUniqueFunc    func(groupID, questionID, answerID string) (*entity.Answer, error)
+	findByQuestion    func(groupID, questionID string) ([]*entity.Answer, error)
 }
 
 func (a *fakeAnswerRepository) Post(answer *entity.Answer) error {
@@ -30,28 +30,28 @@ func (a *fakeAnswerRepository) FindByGroupID(groupID string) ([]*entity.Answer, 
 	return a.findByGroupIDFunc(groupID)
 }
 
-func (a *fakeAnswerRepository) FindUnique(groupID string, questionID, answerID int) (*entity.Answer, error) {
+func (a *fakeAnswerRepository) FindUnique(groupID, questionID, answerID string) (*entity.Answer, error) {
 	return a.findUniqueFunc(groupID, questionID, answerID)
 }
 
-func (a *fakeAnswerRepository) FindByQuestion(groupID string, questionID int) ([]*entity.Answer, error) {
+func (a *fakeAnswerRepository) FindByQuestion(groupID, questionID string) ([]*entity.Answer, error) {
 	return a.findByQuestion(groupID, questionID)
 }
 
 func TestAnswer_GetByGroupID(t *testing.T) {
 	wantAnswers := []*entity.Answer{
 		{
-			ID:         1,
+			ID:         "ID1",
 			GroupID:    "GROUP_ID",
-			QuestionID: 2,
+			QuestionID: "QUESTION_ID1",
 			Contents:   "TEST_CONTENTS1",
 			Username:   "TEST_USERNAME1",
 			CreatedAt:  time.Date(2021, time.September, 18, 1, 0, 0, 0, time.UTC).Format(time.RFC3339),
 		},
 		{
-			ID:         3,
+			ID:         "ID2",
 			GroupID:    "GROUP_ID",
-			QuestionID: 4,
+			QuestionID: "QUESTION_ID2",
 			Contents:   "TEST_CONTENTS2",
 			Username:   "TEST_USERNAME2",
 			CreatedAt:  time.Date(2021, time.September, 18, 2, 0, 0, 0, time.UTC).Format(time.RFC3339),
