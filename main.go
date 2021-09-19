@@ -4,11 +4,12 @@ import (
 	"os"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/config"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/controller"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/infra"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/log"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/usecase"
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -43,6 +44,19 @@ func main() {
 	commentCtrl := controller.NewCommentController(logger, commentUC)
 
 	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:8000",
+		},
+		AllowMethods: []string{
+			"POST",
+			"GET",
+			"OPTIONS",
+			"PUT",
+			"DELETE",
+		},
+		AllowCredentials: true,
+	}))
 
 	api := r.Group("/api")
 
