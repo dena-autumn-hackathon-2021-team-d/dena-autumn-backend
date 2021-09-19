@@ -83,8 +83,7 @@ func TestComment_Post(t *testing.T) {
 	req = `{
 		"contents":"Question?",
 		"username":"user",
-		"group_id":"` + group.ID + `",
-	}`
+		"group_id":"` + group.ID + `"}`
 
 	w = httptest.NewRecorder()
 	context, _ = gin.CreateTestContext(w)
