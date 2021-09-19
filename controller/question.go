@@ -69,12 +69,30 @@ func (ctrl *QuestionController) FindByQuestion(c *gin.Context) {
 		return
 	}
 
-	resAnswers, err := ctrl.uc.FindByQuestion(groupID, questionID)
+	resQuestion, err := ctrl.uc.FindByQuestion(groupID, questionID)
 	if err != nil {
 		c.String(http.StatusInternalServerError, "failed to get question")
-		ctrl.logger.Errorf("failed to get answers by question: %v", err)
+		ctrl.logger.Errorf("failed to get by question: %v", err)
 		return
 	}
 
-	c.JSON(http.StatusOK, resAnswers)
+	c.JSON(http.StatusOK, resQuestion)
+}
+
+func (ctrl *QuestionController) GetAll(c *gin.Context) {
+	groupID := c.Param("group_id")
+	if groupID == "" {
+		c.String(http.StatusBadRequest, "invalid path parameter group_id")
+		ctrl.logger.Errorf("invalid path parameter group_id: group_id=%s", groupID)
+		return
+	}
+
+	resQuestions, err := ctrl.uc.GetAll(groupID)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "failed to get all questions")
+		ctrl.logger.Errorf("failed to get by all questions: %v", err)
+		return
+	}
+
+	c.JSON(http.StatusOK, resQuestions)
 }

@@ -3,11 +3,13 @@ package main
 import (
 	"os"
 
+	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/config"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/controller"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/infra"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/log"
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/usecase"
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -42,6 +44,19 @@ func main() {
 	commentCtrl := controller.NewCommentController(logger, commentUC)
 
 	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{
+			"http://localhost:8000",
+		},
+		AllowMethods: []string{
+			"POST",
+			"GET",
+			"OPTIONS",
+			"PUT",
+			"DELETE",
+		},
+		AllowCredentials: true,
+	}))
 
 	api := r.Group("/api")
 
@@ -54,7 +69,7 @@ func main() {
 	//該当する質問を取得する
 	api.GET("/group/:group_id/question/:question_id", questionCtrl.FindByQuestion)
 	//グループの質問一覧
-	api.GET("/group/:group_id/questions", func(c *gin.Context) {})
+	api.GET("/group/:group_id/questions", questionCtrl.GetAll)
 
 	//解答のポスト
 	api.POST("/answer", answerCtrl.Post)
@@ -72,5 +87,5 @@ func main() {
 	//コメント一覧を取得する
 	api.GET("/group/:group_id/question/:question_id/answer/:answer_id/comments", commentCtrl.GetByAnswer)
 
-	r.Run(":8000")
+	r.Run(config.Port())
 }

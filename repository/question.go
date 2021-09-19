@@ -8,4 +8,5 @@ type Question interface {
 	Post(*entity.Question) error
 	FindRandomly(groupID string) (*entity.Question, error)
 	FindByQuestion(groupID string, questionID int) (*entity.Question, error)
+	GetAll(groupID string) ([]*entity.Question, error)
 }
