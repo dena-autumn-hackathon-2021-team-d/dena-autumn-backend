@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http/httptest"
 	"os"
-	"strconv"
 	"testing"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/controller"
@@ -34,10 +33,7 @@ func TestQuestion(t *testing.T) {
 		}
 	}()
 
-	// truncateTable(t, dbMap, "groups")
-	// truncateTable(t, dbMap, "questions")
-
-    groupRepo := infra.NewGroupRepository(dbMap)
+	groupRepo := infra.NewGroupRepository(dbMap)
 	groupUC := usecase.NewGroupUseCase(groupRepo)
 	groupCtrl := controller.NewGroupController(logger, groupUC)
 
@@ -45,14 +41,14 @@ func TestQuestion(t *testing.T) {
 	questionUC := usecase.NewQuestionUseCase(questionRepo)
 	questionCtrl := controller.NewQuestionController(logger, questionUC)
 
-    // Groupの作成
-    reqBody := `{"name":"groupname"}`
+	// Groupの作成
+	reqBody := `{"name":"groupname"}`
 	w := httptest.NewRecorder()
 	context, _ := gin.CreateTestContext(w)
-    context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(reqBody))
-    groupCtrl.Create(context)
+	context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(reqBody))
+	groupCtrl.Create(context)
 
-    var group entity.Group
+	var group entity.Group
 	if err = json.Unmarshal(w.Body.Bytes(), &group); err != nil {
 		t.Fatal(err, string(w.Body.Bytes()))
 	}
@@ -61,22 +57,22 @@ func TestQuestion(t *testing.T) {
 	reqBody = `{
     "contents":"Question?",
     "username":"user",
-    "group_id":"`+group.ID+`"
+    "group_id":"` + group.ID + `"
 }`
 	w = httptest.NewRecorder()
 	context, _ = gin.CreateTestContext(w)
-    context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(reqBody))
-    questionCtrl.Post(context)
-    var question entity.Question
+	context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(reqBody))
+	questionCtrl.Post(context)
+	var question entity.Question
 	if err = json.Unmarshal(w.Body.Bytes(), &question); err != nil {
 		t.Fatal(err, string(w.Body.Bytes()))
 	}
-    want := entity.Question{
-        Contents:"Question?",
+	want := entity.Question{
+		Contents: "Question?",
 		Username: "user",
-		GroupID: group.ID,
-    }
-    opts := cmpopts.IgnoreFields(question, "CreatedAt", "ID")
+		GroupID:  group.ID,
+	}
+	opts := cmpopts.IgnoreFields(question, "CreatedAt", "ID")
 	if diff := cmp.Diff(want, question, opts); diff != "" {
 		t.Errorf("Post (-want +got) =\n%s\n", diff)
 	}
@@ -84,18 +80,18 @@ func TestQuestion(t *testing.T) {
 	// FindByQuestionが正しく取得できる
 	w = httptest.NewRecorder()
 	context, _ = gin.CreateTestContext(w)
-    context.Request = httptest.NewRequest("GET", "/", nil)
-	context.Params = append(context.Params, 
+	context.Request = httptest.NewRequest("GET", "/", nil)
+	context.Params = append(context.Params,
 		gin.Param{Key: "group_id", Value: group.ID},
-		gin.Param{Key: "question_id", Value: strconv.Itoa(question.ID)},
+		gin.Param{Key: "question_id", Value: question.ID},
 	)
 	fmt.Println(group.ID, question.ID)
-    questionCtrl.FindByQuestion(context)
-    var got entity.Question
+	questionCtrl.FindByQuestion(context)
+	var got entity.Question
 	if err = json.Unmarshal(w.Body.Bytes(), &got); err != nil {
 		t.Fatal(err, string(w.Body.Bytes()))
 	}
-    want = question
+	want = question
 	if diff := cmp.Diff(want, got); diff != "" {
 		t.Errorf("FindByQuestion (-want +got) =\n%s\n", diff)
 	}
