@@ -47,17 +47,17 @@ func (qr QuestionRepository) FindByQuestion(groupID string, questionID int) (*en
 				FROM questions AS q
 				WHERE question_id = ? AND group_id = ?`
 
-	var questions *entity.Question
-	if err := qr.dbmap.SelectOne(questions, query, questionID, groupID); err != nil {
+	question := &entity.Question{}
+	if err := qr.dbmap.SelectOne(question, query, questionID, groupID); err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
-	return questions, nil
+	return question, nil
 }
 
 func (qr QuestionRepository) GetAll(groupID string) ([]*entity.Question, error) {
 	query := `SELECT * FROM questions WHERE group_id = ? ORDER BY created_at DESC `
 
-	var questions []*entity.Question
+	questions := []*entity.Question{}
 	if _, err := qr.dbmap.Select(&questions, query, groupID); err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}

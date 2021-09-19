@@ -13,4 +13,5 @@ cover.html
 # vendor/
 
 .env
+.envrc
 data.db
