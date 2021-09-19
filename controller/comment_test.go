@@ -57,13 +57,13 @@ func TestComment_Post(t *testing.T) {
 	groupUC := usecase.NewGroupUseCase(groupRepo)
 	groupCtrl := controller.NewGroupController(logger, groupUC)
 
-	questionRepo := infra.NewQuestionRepository(dbMap)
-	questionUC := usecase.NewQuestionUseCase(questionRepo)
-	questionCtrl := controller.NewQuestionController(logger, questionUC)
-
 	answerRepo := infra.NewAnswerRepository(dbMap)
 	answerUC := usecase.NewAnswerUseCase(answerRepo)
 	answerCtrl := controller.NewAnswerController(logger, answerUC)
+
+	questionRepo := infra.NewQuestionRepository(dbMap)
+	questionUC := usecase.NewQuestionUseCase(questionRepo)
+	questionCtrl := controller.NewQuestionController(logger, questionUC)
 
 	commentRepo := infra.NewCommentRepository(dbMap)
 	commentUC := usecase.NewCommentUseCase(commentRepo)
@@ -83,7 +83,7 @@ func TestComment_Post(t *testing.T) {
 	req = `{
 		"contents":"Question?",
 		"username":"user",
-		"group_id":"` + group.ID + `"
+		"group_id":"` + group.ID + `",
 	}`
 
 	w = httptest.NewRecorder()
@@ -180,7 +180,7 @@ func TestComment_GetUnique(t *testing.T) {
 }
 
 func TestComment_GetByAnswer(t *testing.T) {
-	wantComment := []*entity.Comment {
+	wantComment := []*entity.Comment{
 		{
 			ID:         "1",
 			GroupID:    "GroupID",
@@ -202,7 +202,7 @@ func TestComment_GetByAnswer(t *testing.T) {
 	}
 
 	commentRepo := &fakeCommentRepository{
-		findByAnswerFunc: func(groupID string, questionID string, answerID string) ([]*entity.Comment, error){
+		findByAnswerFunc: func(groupID string, questionID string, answerID string) ([]*entity.Comment, error) {
 			return wantComment, nil
 		},
 	}
@@ -212,9 +212,9 @@ func TestComment_GetByAnswer(t *testing.T) {
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
 
-	c.Params = append(c.Params, gin.Param{Key: "group_id", Value: "GroupID"}, gin.Param{Key:"question_id", Value: "1"}, gin.Param{Key:"answer_id", Value: "1"}, )
+	c.Params = append(c.Params, gin.Param{Key: "group_id", Value: "GroupID"}, gin.Param{Key: "question_id", Value: "1"}, gin.Param{Key: "answer_id", Value: "1"})
 	commentCtrl.GetByAnswer(c)
-	
+
 	var comment []*entity.Comment
 	if err := json.Unmarshal(w.Body.Bytes(), &comment); err != nil {
 		t.Fatalf("failed to unmarshal: %v", err)
