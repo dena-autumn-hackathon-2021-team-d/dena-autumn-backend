@@ -22,7 +22,7 @@ func NewCommentController(logger *log.Logger, commentUC *usecase.CommentUseCase)
 }
 
 func (ctrl *CommentController) Post(c *gin.Context) {
-	var comment *entity.Comment
+	comment := &entity.Comment{}
 	if err := c.ShouldBindJSON(comment); err != nil {
 		c.String(http.StatusInternalServerError, "failed to bind request body")
 		ctrl.logger.Errorf("failed to bind request body: %v", err)

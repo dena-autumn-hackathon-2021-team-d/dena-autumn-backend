@@ -22,8 +22,8 @@ func NewGroupController(logger *log.Logger, uc *usecase.GroupUseCase) *GroupCont
 }
 
 func (ctrl *GroupController) Create(c *gin.Context) {
-	var group *entity.Group
-	err := c.ShouldBindJSON(&group)
+	group := &entity.Group{}
+	err := c.ShouldBindJSON(group)
 	if err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		ctrl.logger.Errorf("failed to bind request body: :%v\n", err)
