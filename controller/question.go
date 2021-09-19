@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/entity"
@@ -46,6 +47,10 @@ func (ctrl *QuestionController) GetRandomly(c *gin.Context) {
 
 	question, err := ctrl.uc.GetRandomly(groupID)
 	if err != nil {
+		if errors.Is(err, entity.ErrQuestionNotFound) {
+			c.String(http.StatusNotFound, entity.ErrQuestionNotFound.Error())
+			return
+		}
 		c.String(http.StatusInternalServerError, "failed to get question Randomly")
 		ctrl.logger.Errorf("failed to get question Randomly: %v", err)
 		return
