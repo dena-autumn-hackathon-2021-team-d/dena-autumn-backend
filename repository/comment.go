@@ -4,6 +4,6 @@ import "github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/
 
 type Comment interface {
 	Post(comment *entity.Comment) error
-	FindUnique(groupID string, questionID, answerID, commentID int) (*entity.Comment, error)
-	FindByAnswer(groupID string, questionID, answerID int) ([]*entity.Comment, error)
+	FindUnique(groupID, questionID, answerID, commentID string) (*entity.Comment, error)
+	FindByAnswer(groupID, questionID, answerID string) ([]*entity.Comment, error)
 }
