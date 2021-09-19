@@ -40,7 +40,7 @@ func (qr *QuestionRepository) FindRandomly(groupID string) (*entity.Question, er
 func (qr QuestionRepository) FindByQuestion(groupID string, questionID int) (*entity.Question, error) {
 	query := `SELECT id, contents, group_id, username, created_at, (SELECT COUNT(id) FROM answers AS a WHERE a.question_id = q.id) as num_answers
 				FROM questions AS q
-				WHERE question_id = ? AND group_id = ?`
+				WHERE id = ? AND group_id = ?`
 
 	var questions *entity.Question
 	if err := qr.dbmap.SelectOne(questions, query, questionID, groupID); err != nil {

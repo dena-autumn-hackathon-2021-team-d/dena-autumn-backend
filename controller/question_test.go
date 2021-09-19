@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http/httptest"
 	"os"
+	"strconv"
 	"testing"
 
 	"github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/controller"
@@ -32,13 +33,13 @@ func TestQuestion(t *testing.T) {
 			logger.Errorf("failed to close DB: %s", err.Error())
 		}
 	}()
+
+	// truncateTable(t, dbMap, "groups")
+	// truncateTable(t, dbMap, "questions")
+
     groupRepo := infra.NewGroupRepository(dbMap)
 	groupUC := usecase.NewGroupUseCase(groupRepo)
 	groupCtrl := controller.NewGroupController(logger, groupUC)
-
-	// answerRepo := infra.NewAnswerRepository(dbMap)
-	// answerUC := usecase.NewAnswerUseCase(answerRepo)
-	// answerCtrl := controller.NewAnswerController(logger, answerUC)
 
 	questionRepo := infra.NewQuestionRepository(dbMap)
 	questionUC := usecase.NewQuestionUseCase(questionRepo)
@@ -62,27 +63,40 @@ func TestQuestion(t *testing.T) {
     "username":"user",
     "group_id":"`+group.ID+`"
 }`
-
-	fmt.Println(reqBody)
-	
 	w = httptest.NewRecorder()
 	context, _ = gin.CreateTestContext(w)
     context.Request = httptest.NewRequest("GET", "/", bytes.NewBufferString(reqBody))
     questionCtrl.Post(context)
-
-    var got entity.Question
-	if err = json.Unmarshal(w.Body.Bytes(), &got); err != nil {
+    var question entity.Question
+	if err = json.Unmarshal(w.Body.Bytes(), &question); err != nil {
 		t.Fatal(err, string(w.Body.Bytes()))
 	}
-
     want := entity.Question{
         Contents:"Question?",
 		Username: "user",
 		GroupID: group.ID,
     }
-    
-    opts := cmpopts.IgnoreFields(got, "CreatedAt", "ID")
-	if diff := cmp.Diff(want, got, opts); diff != "" {
-		t.Errorf("Create (-want +got) =\n%s\n", diff)
+    opts := cmpopts.IgnoreFields(question, "CreatedAt", "ID")
+	if diff := cmp.Diff(want, question, opts); diff != "" {
+		t.Errorf("Post (-want +got) =\n%s\n", diff)
+	}
+
+	// FindByQuestionが正しく取得できる
+	w = httptest.NewRecorder()
+	context, _ = gin.CreateTestContext(w)
+    context.Request = httptest.NewRequest("GET", "/", nil)
+	context.Params = append(context.Params, 
+		gin.Param{Key: "group_id", Value: group.ID},
+		gin.Param{Key: "question_id", Value: strconv.Itoa(question.ID)},
+	)
+	fmt.Println(group.ID, question.ID)
+    questionCtrl.FindByQuestion(context)
+    var got entity.Question
+	if err = json.Unmarshal(w.Body.Bytes(), &got); err != nil {
+		t.Fatal(err, string(w.Body.Bytes()))
+	}
+    want = question
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("FindByQuestion (-want +got) =\n%s\n", diff)
 	}
 }

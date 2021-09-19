@@ -31,6 +31,9 @@ func TestGroup(t *testing.T) {
 			logger.Errorf("failed to close DB: %s", err.Error())
 		}
 	}()
+	
+	// truncateTable(t, dbMap, "groups")
+
     groupRepo := infra.NewGroupRepository(dbMap)
     groupUC := usecase.NewGroupUseCase(groupRepo)
     groupCtrl := controller.NewGroupController(logger, groupUC)
