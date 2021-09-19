@@ -6,5 +6,5 @@ type Question struct {
 	GroupID    string `json:"group_id" db:"group_id"`
 	Username   string `json:"username" db:"username"`
 	CreatedAt  string `json:"created_at" db:"created_at"`
-	NumAnswers int    `json:"num_answers" db:"num_answers"`
+	NumAnswers int    `json:"num_answers" db:"-"`
 }
