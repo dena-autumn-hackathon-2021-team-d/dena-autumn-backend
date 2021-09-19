@@ -27,7 +27,7 @@ func (qr *QuestionRepository) Post(question *entity.Question) error {
 func (qr *QuestionRepository) FindRandomly(groupID string) (*entity.Question, error) {
 	query := `SELECT id, contents, group_id, username, created_at, (SELECT COUNT(id) FROM answers AS a WHERE a.question_id = q.id) as num_answers
 				FROM questions AS q
-				WHERE group_id = ? ORDER BY RAND() LIMIT 1`
+				WHERE group_id = ? ORDER BY RANDOM() LIMIT 1`
 
 	var question *entity.Question
 	if err := qr.dbmap.SelectOne(&question, query, groupID); err != nil {
