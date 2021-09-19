@@ -39,3 +39,21 @@ func (ctrl *GroupController) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, group)
 	return
 }
+
+func (ctrl *GroupController) GetByID(c *gin.Context) {
+	groupID := c.Param("group_id")
+	if groupID == "" {
+		c.String(http.StatusBadRequest, "invalid path parameter group_id")
+		ctrl.logger.Errorf("invalid path parameter group_id: group_id=%s", groupID)
+		return
+	}
+
+	group, err := ctrl.uc.GetByID(groupID)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		ctrl.logger.Errorf("failed to get group by id: %w", err)
+		return
+	}
+
+	c.JSON(http.StatusOK, group)
+}

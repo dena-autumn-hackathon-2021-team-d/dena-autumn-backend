@@ -4,4 +4,5 @@ import "github.com/dena-autumn-hackathon-2021-team-d/dena-autumn-backend/domain/
 
 type Group interface {
 	Insert(group *entity.Group) error
+	FindByID(groupID string) (*entity.Group, error)
 }
